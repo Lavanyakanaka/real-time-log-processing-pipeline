@@ -1,0 +1,31 @@
+# docker-compose.override.yml - Development overrides
+# This file is automatically loaded by docker-compose if it exists
+# Use for development-specific configurations
+
+version: '3.8'
+
+services:
+  producer:
+    build:
+      context: ./src/producer
+      dockerfile: Dockerfile
+    environment:
+      # Override to faster message rate for testing
+      MESSAGE_RATE: 5
+    ports:
+      - "5001:5001"  # For potential future debugging
+
+  consumer:
+    build:
+      context: ./src/consumer
+      dockerfile: Dockerfile
+    environment:
+      # Process all levels during development for better testing
+      LOG_LEVEL_FILTER: ERROR,WARN,INFO
+    ports:
+      - "5002:5002"  # For potential future debugging
+
+  broker:
+    environment:
+      # Development-specific settings
+      LOG_RETENTION_MS: 86400000  # 24 hours for dev
